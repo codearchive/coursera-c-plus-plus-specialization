@@ -15,3 +15,15 @@ Date::Date(const int& year, const int& month, const int& day) {
     month_ = month;
     day_ = day;
 }
+
+Date ParseDate(std::istream& is) {
+    int year = 0;
+    int month = 0;
+    int day = 0;
+    is >> year;
+    is.ignore(1);
+    is >> month;
+    is.ignore(1);
+    is >> day;
+    return Date(year, month, day);
+}

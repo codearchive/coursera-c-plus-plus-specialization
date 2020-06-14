@@ -1,15 +1,14 @@
 #pragma once
 
 #include "date.h"
-#include "entry.h"
 
-#include <algorithm>
 #include <map>
 #include <string>
+#include <vector>
+//#include <algorithm>
 #include <set>
 #include <sstream>
-#include <vector>
-
+#include <iterator>
 
 using namespace std;
 
@@ -29,11 +28,12 @@ public:
             auto it_border = std::stable_partition(it_map->second.begin(),
                 it_map->second.end(),
                 predicate);
-            for (auto it_remove_set = it_border; it_remove_set != it_map->second.end(); ++it_remove_set) {
-                counter += added_events_[it_map->first].erase(*it_remove_set);
-            }
+            counter += it_map->second.end() - it_border;
             database_[it_map->first].erase(it_border, it_map->second.end());
-            if (database_[it_map->first].size() == 0) {
+            if (database_[it_map->first].size() != 0) {
+                added_events_[it_map->first] = set<std::string>(database_[it_map->first].begin(), database_[it_map->first].end());
+            }
+            else {
                 empty_dates.insert(it_map->first);
             }
         }
@@ -43,20 +43,22 @@ public:
         }
         return counter;
     }
-
+    
     template <typename PredFunc>
-    std::vector<Entry> FindIf(PredFunc func) const {
-        std::vector<Entry> entries;
+    std::vector<std::string> FindIf(PredFunc func) const {
+        std::vector<std::string> entries;
         for (auto it_map = database_.begin(); it_map != database_.end(); ++it_map) {
             for (auto it_event = it_map->second.begin(); it_event != it_map->second.end(); ++it_event) {
                 if (func(it_map->first, *it_event)) {
-                    entries.push_back({ it_map->first, *it_event });
+                    std::stringstream ss;
+                    ss << it_map->first << ' ' << *it_event;
+                    entries.push_back(ss.str());
                 }
             }
         }
         return entries;
     }
-    Entry Last(const Date& date) const;
+    std::string Last(const Date& date) const;
 private:
     std::map<Date, std::vector<std::string>> database_;
     std::map<Date, std::set<std::string>> added_events_;

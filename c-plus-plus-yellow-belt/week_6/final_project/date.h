@@ -1,6 +1,10 @@
 #pragma once
 #include <string>
 #include <iomanip>
+//#include <iostream>
+#include <algorithm>
+
+using namespace std;
 
 class Date {
 public:
@@ -15,6 +19,7 @@ private:
     int day_;
 };
 
+Date ParseDate(std::istream& is);
 
 inline std::ostream& operator<<(std::ostream& stream, const Date& date) {
     stream << std::setw(4) << std::setfill('0') << date.GetYear() << '-'

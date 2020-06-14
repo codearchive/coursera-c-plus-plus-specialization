@@ -1,10 +1,11 @@
-﻿#include "database.h"
+#include "database.h"
 #include "date.h"
 #include "condition_parser.h"
 #include "node.h"
 #include "test_runner.h"
 
 #include <iostream>
+// #include <stdexcept>
 #include <string>
 // #include <sstream>
 //#include <algorithm>
@@ -12,6 +13,14 @@
 #include <set>
 
 using namespace std;
+
+template<typename K, typename V>
+ostream& operator<<(ostream& os, const pair<K, V>& p) {
+    for (const auto& el : p.second) {
+        os << p.first << ' ' << el;
+    }
+    return os;
+}
 
 string ParseEvent(istream& is) {
     while (is.peek() == ' ') {
@@ -81,7 +90,6 @@ int main() {
 
     return 0;
 }
-
 
 void TestParseEvent() {
     {
